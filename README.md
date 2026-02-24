@@ -21,6 +21,38 @@ while the server should work on anything Qt can be installed on.
 The documentation of the project can be found on [the website](https://www.mumble.info/documentation/).
 
 
+## HRTF Binaural Audio (Proof of Concept)
+
+> **Note:** This is a proof-of-concept branch, not merged upstream.
+> See [`hrtf-design.md`](hrtf-design.md) for the full design rationale.
+
+This branch adds HRTF (Head-Related Transfer Function) binaural rendering
+for positional audio. HRTF convolution applies measured ear-specific
+impulse responses to mono source signals, providing elevation cues and
+front/back disambiguation that amplitude panning cannot reproduce.
+The default HRTF is the MIT KEMAR dataset; users can load any standard
+[SOFA](https://www.sofaconventions.org/) file.
+
+### Additional Dependencies
+
+- **libmysofa** (BSD-3): loads and interpolates SOFA HRTF files
+  — `apt install libmysofa-dev` on Debian/Ubuntu
+- **FFTConvolver** (MIT): vendored submodule at `3rdparty/fftconvolver/`
+
+### Building
+
+Initialize the submodule, then build normally:
+
+```sh
+git submodule update --init 3rdparty/fftconvolver
+cmake -Dhrtf=ON ...     # enabled by default when libmysofa is found
+cmake -Dhrtf=OFF ...    # build without HRTF
+```
+
+Enable **HRTF binaural audio** in *Settings → Audio Output → Positional
+Audio* and use headphones for best results.
+
+
 ## Contributing
 
 We always welcome contributions to the project. If you have some code that you would like to contribute, please go ahead and create a PR. While doing so,
