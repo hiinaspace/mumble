@@ -46,6 +46,7 @@ doxygen/
 .DS_Store
 .directory
 build/
+mumble-hrtf-test-*.zip
 compile_commands.json
 .devcontainer/*
 __pycache__/

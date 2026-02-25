@@ -8,6 +8,7 @@
 #include <mysofa.h>
 #include "FFTConvolver.h"
 
+#include <QCoreApplication>
 #include <QFileInfo>
 #include <QStandardPaths>
 
@@ -41,12 +42,18 @@ bool HrtfSpatializer::loadHRTF(const QString &sofaPath) {
 		candidates << sofaPath;
 	}
 
-	// Installed data directory (e.g. /usr/share/mumble/hrtf/default.sofa)
+	// Installed data directory (e.g. /usr/share/mumble/hrtf/default.sofa on Linux,
+	// or %AppData%\Mumble\hrtf\default.sofa on Windows via a system install)
 	const QString installed = QStandardPaths::locate(QStandardPaths::AppDataLocation,
 	                                                  QStringLiteral("hrtf/default.sofa"));
 	if (!installed.isEmpty()) {
 		candidates << installed;
 	}
+
+	// Portable layout: <exe dir>/share/mumble/hrtf/default.sofa
+	// Matches the path produced by cmake --install on Windows.
+	candidates << QCoreApplication::applicationDirPath()
+	                  + QStringLiteral("/share/mumble/hrtf/default.sofa");
 
 #ifdef MUMBLE_HRTF_DEFAULT_SOFA
 	// Source-tree path baked in at build time (developer / uninstalled builds)
