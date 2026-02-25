@@ -15,6 +15,10 @@
 #	include "ManualPlugin.h"
 #endif
 
+#ifdef USE_SPATIAL_ROOM
+#	include "SpatialRoomPlugin.h"
+#endif
+
 #ifdef USE_HRTF
 #	include "HrtfSpatializer.h"
 #endif
@@ -101,7 +105,7 @@ protected:
 	QReadWriteLock qrwlOutputs;
 	QMultiHash< const ClientUser *, AudioOutputBuffer * > qmOutputs;
 
-#ifdef USE_MANUAL_PLUGIN
+#if defined(USE_MANUAL_PLUGIN) || defined(USE_SPATIAL_ROOM)
 	QHash< unsigned int, Position2D > positions;
 #endif
 

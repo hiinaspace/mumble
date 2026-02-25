@@ -26,6 +26,8 @@ option(bundled-rnnoise "Build the included version of RNNoise instead of looking
 
 option(manual-plugin "Include the built-in \"manual\" positional audio plugin." ON)
 
+option(spatial-room "Include the built-in \"spatial room\" positional audio plugin." ON)
+
 option(hrtf "Build with HRTF binaural spatialization (requires libmysofa)." ON)
 
 option(qtspeech "Use Qt's text-to-speech system (part of the Qt Speech module) instead of Mumble's own OS-specific text-to-speech implementations." OFF)
@@ -836,6 +838,16 @@ if(manual-plugin)
 	)
 
 target_compile_definitions(mumble_client_object_lib PUBLIC "USE_MANUAL_PLUGIN")
+endif()
+
+if(spatial-room)
+	target_sources(mumble_client_object_lib
+		PRIVATE
+			"SpatialRoomPlugin.cpp"
+			"SpatialRoomPlugin.h"
+	)
+
+	target_compile_definitions(mumble_client_object_lib PUBLIC "USE_SPATIAL_ROOM")
 endif()
 
 if(NOT update)

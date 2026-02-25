@@ -476,7 +476,7 @@ void AudioOutput::prepareOutputBuffers(unsigned int frameCount, QList< AudioOutp
 }
 
 bool AudioOutput::mix(void *outbuff, unsigned int frameCount) {
-#ifdef USE_MANUAL_PLUGIN
+#if defined(USE_MANUAL_PLUGIN) || defined(USE_SPATIAL_ROOM)
 	positions.clear();
 #endif
 
@@ -743,7 +743,7 @@ bool AudioOutput::mix(void *outbuff, unsigned int frameCount) {
 				if (validListener
 					&& ((buffer->fPos[0] != 0.0f) || (buffer->fPos[1] != 0.0f) || (buffer->fPos[2] != 0.0f))) {
 					// Add position to position map
-#ifdef USE_MANUAL_PLUGIN
+#if defined(USE_MANUAL_PLUGIN) || defined(USE_SPATIAL_ROOM)
 					if (user) {
 						// The coordinates in the plane are actually given by x and z instead of x and y (y is up)
 						positions.insert(user->uiSession, { buffer->fPos[0], buffer->fPos[2] });
@@ -966,8 +966,13 @@ bool AudioOutput::mix(void *outbuff, unsigned int frameCount) {
 		invalidateBuffer(buffer);
 	}
 
-#ifdef USE_MANUAL_PLUGIN
+#if defined(USE_MANUAL_PLUGIN) || defined(USE_SPATIAL_ROOM)
+#	ifdef USE_MANUAL_PLUGIN
 	Manual::setSpeakerPositions(positions);
+#	endif
+#	ifdef USE_SPATIAL_ROOM
+	SpatialRoom::setSpeakerPositions(positions);
+#	endif
 #endif
 
 	// Return whether data has been written to the outbuff

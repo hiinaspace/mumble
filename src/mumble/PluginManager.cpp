@@ -32,6 +32,10 @@
 #	include "ManualPlugin.h"
 #endif
 
+#ifdef USE_SPATIAL_ROOM
+#	include "SpatialRoomPlugin.h"
+#endif
+
 #include <cassert>
 #include <cstdint>
 #include <memory>
@@ -335,6 +339,20 @@ void PluginManager::rescanPlugins() {
 			// At the time this function is running the MainWindow is not necessarily created yet, so we can't use
 			// the normal Log::log function
 			Log::logOrDefer(Log::Warning, tr("Failed at loading manual plugin: %1").arg(QString::fromUtf8(e.what())));
+		}
+#endif
+
+#ifdef USE_SPATIAL_ROOM
+		try {
+			std::shared_ptr< SpatialRoomPlugin > srp(Plugin::createNew< SpatialRoomPlugin >());
+
+			m_pluginHashMap.insert(srp->getID(), srp);
+#	ifdef MUMBLE_PLUGIN_DEBUG
+			LOG_FOUND_BUILTIN(srp);
+#	endif
+		} catch (const PluginError &e) {
+			Log::logOrDefer(Log::Warning,
+							tr("Failed at loading spatial room plugin: %1").arg(QString::fromUtf8(e.what())));
 		}
 #endif
 	}
