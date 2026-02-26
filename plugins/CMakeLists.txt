@@ -4,6 +4,7 @@
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 option(retracted-plugins "Build redacted (outdated) plugins as well" OFF)
+set(plugins-only "" CACHE STRING "Build only these specific plugins (semicolon-separated list; empty = build all available plugins)")
 
 if(retracted-plugins)
 	message(STATUS "Including retracted plugins")
@@ -83,6 +84,11 @@ if(WIN32 OR (UNIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux"))
 		"wow"
 		"wow_x64"
 	)
+endif()
+
+if(plugins-only)
+	set(AVAILABLE_PLUGINS "${plugins-only}")
+	message(STATUS "Building only selected plugins: ${plugins-only}")
 endif()
 
 list(REMOVE_DUPLICATES AVAILABLE_PLUGINS)
